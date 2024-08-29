@@ -7,6 +7,20 @@ import re
 app = Flask(__name__)
 translator = Translator()
 
+def get_culture_code(language):
+    # A dictionary to map language codes to culture codes
+    language_to_culture = {
+        'fr': 'fr-FR',
+        'es': 'es-ES',
+        'de': 'de-DE',
+        'en': 'en-US',
+        'pt': 'pt-PT'  # European Portuguese
+        # Add more mappings as needed
+    }
+    
+    # Return the corresponding culture code, default to language.lower() + "-" + language.upper()
+    return language_to_culture.get(language, f"{language.lower()}-{language.upper()}")
+
 def translate_resx(file_path, target_language):
     # Parse the file
     tree = ET.parse(file_path)
@@ -23,12 +37,19 @@ def translate_resx(file_path, target_language):
 
             value_element.text = translation
 
-    # Modify the filename to replace the language code
+    # Get the culture code based on the target language
+    culture_code = get_culture_code(target_language)
+
+    # Modify the filename to include the culture code
     base, ext = os.path.splitext(file_path)
     # Regex pattern to find the current language code in the filename
     pattern = re.compile(r'\.[a-z]{2}-[A-Z]{2}\.resx$')
-    # Replace with the new language code
-    translated_file_path = pattern.sub(f'.{target_language}.resx', base + ext)
+    # Replace with the new culture code
+    translated_file_path = pattern.sub(f'.{culture_code}.resx', base + ext)
+
+    # If no existing language code pattern is found, append the new culture code
+    if translated_file_path == file_path:
+        translated_file_path = f"{base}.{culture_code}.resx"
 
     tree.write(translated_file_path, encoding='utf-8', xml_declaration=True)
     return translated_file_path

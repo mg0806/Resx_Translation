@@ -27,24 +27,30 @@ def translate_resx(file_path, target_language):
     root = tree.getroot()
 
     for data in root.findall('data'):
+        name_element = data.get('name')  # Get the name attribute
         value_element = data.find('value')
-        if value_element is not None and value_element.text:
-            try:
-                translation = translator.translate(value_element.text, src='en', dest=target_language).text
-            except Exception as e:
-                print(f"Error translating '{value_element.text}': {e}")
-                translation = value_element.text  # Fallback to original text
 
-            value_element.text = translation
+        if name_element:  # Check if the name element exists
+            try:
+                # Translate the name attribute value
+                translation = translator.translate(name_element, src='en', dest=target_language).text
+                # Store the translated text in the value element
+                if value_element is None:
+                    value_element = ET.Element('value')
+                    data.append(value_element)
+                value_element.text = translation
+            except Exception:
+                if value_element is None:
+                    value_element = ET.Element('value')
+                    data.append(value_element)
+                value_element.text = name_element  # Fallback to original text
 
     # Get the culture code based on the target language
     culture_code = get_culture_code(target_language)
 
     # Modify the filename to include the culture code
     base, ext = os.path.splitext(file_path)
-    # Regex pattern to find the current language code in the filename
     pattern = re.compile(r'\.[a-z]{2}-[A-Z]{2}\.resx$')
-    # Replace with the new culture code
     translated_file_path = pattern.sub(f'.{culture_code}.resx', base + ext)
 
     # If no existing language code pattern is found, append the new culture code

@@ -14,7 +14,10 @@ def get_culture_code(language):
         'es': 'es-ES',
         'de': 'de-DE',
         'en': 'en-US',
-        'pt': 'pt-PT'  # European Portuguese
+        'pt': 'pt-PT',  # European Portuguese
+        'tr': 'tr-TR',  # Turkish
+        'ja': 'ja-JP',  # Japanese
+        'zh-cn': 'zh-CN'
         # Add more mappings as needed
     }
     

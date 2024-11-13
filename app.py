@@ -17,7 +17,8 @@ def get_culture_code(language):
         'pt': 'pt-PT',  # European Portuguese
         'tr': 'tr-TR',  # Turkish
         'ja': 'ja-JP',  # Japanese
-        'zh-cn': 'zh-CN'
+        'zh-cn': 'zh-CN',  # Simplified Chinese
+        'zh-tw': 'zh-TW'   # Traditional Chinese
         # Add more mappings as needed
     }
     
